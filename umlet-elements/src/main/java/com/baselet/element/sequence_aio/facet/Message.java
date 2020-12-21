@@ -256,7 +256,7 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 		for (String text : textLines) {
 			width = Math.max(width, drawHandler.textWidth(text));
 		}
-		return width;
+		return width + 10;
 	}
 
 	protected void getEveryAdditionalYHeightSelfMessage(DrawHandler drawHandler, HorizontalDrawingInfo hInfo, double defaultTickHeight, Map<Integer, Double> ret) {
