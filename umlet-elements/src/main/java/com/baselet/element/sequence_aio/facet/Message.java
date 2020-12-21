@@ -164,8 +164,9 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 			hAlignment = AlignHorizontal.CENTER;
 		}
 		topLeftX += LIFELINE_TEXT_PADDING;
+		double width = textMinWidth(textLines, drawHandler);
 		TextSplitter.drawText(drawHandler, textLines, topLeftX, send.y - height,
-				Math.abs(send.x - receive.x) - LIFELINE_TEXT_PADDING * 2, height, hAlignment, AlignVertical.BOTTOM);
+				width, height, hAlignment, AlignVertical.BOTTOM);
 	}
 
 	/**
@@ -236,10 +237,10 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 	}
 
 	protected void getEveryAdditionalYHeightNormalMessage(DrawHandler drawHandler, HorizontalDrawingInfo hInfo, double defaultTickHeight, Map<Integer, Double> ret) {
-		double maxTextWidth;
+		double maxTextWidth = textMinWidth(textLines, drawHandler);
 		double additionalHeight;
-		maxTextWidth = Math.abs(getSendX(hInfo) - getReceiveX(hInfo));
-		maxTextWidth -= LIFELINE_TEXT_PADDING * 2;
+//		maxTextWidth = Math.abs(getSendX(hInfo) - getReceiveX(hInfo));
+//		maxTextWidth -= LIFELINE_TEXT_PADDING * 2;
 		additionalHeight = TextSplitter.getSplitStringHeight(textLines, maxTextWidth, drawHandler);
 		// message text is always drawn at the send position only increase send tick height
 		// since the message is always drawn in the V center we only can use one half of the tick height
