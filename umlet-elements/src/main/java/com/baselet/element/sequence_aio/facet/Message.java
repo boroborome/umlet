@@ -1,11 +1,5 @@
 package com.baselet.element.sequence_aio.facet;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.baselet.control.basics.geom.Line;
 import com.baselet.control.basics.geom.PointDouble;
 import com.baselet.control.enums.AlignHorizontal;
@@ -15,6 +9,11 @@ import com.baselet.diagram.draw.DrawHandler;
 import com.baselet.diagram.draw.TextSplitter;
 import com.baselet.element.relation.helper.RelationDrawer;
 import com.baselet.element.relation.helper.RelationDrawer.ArrowEndType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Message implements LifelineSpanningTickSpanningOccurrence {
 
@@ -187,7 +186,7 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 		rightBorderX += SELF_MESSAGE_TEXT_PADDING;
 //		double lifelineXEnd = Math.min(hInfo.getHDrawingInfo(to).getSymmetricHorizontalEnd(sendTick),
 //				hInfo.getHDrawingInfo(to).getSymmetricHorizontalEnd(sendTick + duration));
-		double width = TextSplitter.getTextMinWidth(textLines, drawHandler);
+		double width = textMinWidth(textLines, drawHandler);
 		TextSplitter.drawText(drawHandler, textLines, rightBorderX, send.y,
 				width, receive.y - send.y, AlignHorizontal.LEFT, AlignVertical.CENTER);
 	}
@@ -251,8 +250,16 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 		}
 	}
 
+	private double textMinWidth(String[] textLines, DrawHandler drawHandler) {
+		double width = 0;
+		for (String text : textLines) {
+			width = Math.max(width, drawHandler.textWidth(text));
+		}
+		return width;
+	}
+
 	protected void getEveryAdditionalYHeightSelfMessage(DrawHandler drawHandler, HorizontalDrawingInfo hInfo, double defaultTickHeight, Map<Integer, Double> ret) {
-		double maxTextWidth = TextSplitter.getTextMinWidth(textLines, drawHandler);
+		double maxTextWidth = textMinWidth(textLines, drawHandler);
 		double additionalHeight;
 		// if more y space is needed the all covered ticks will be increased
 //		double executionSpecWidth = Math.max(from.getLifelineRightPartWidth(sendTick),
