@@ -185,10 +185,11 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 		RelationDrawer.drawArrowToLine(receive, drawHandler, new Line(msgLine[2], msgLine[3]), false, arrowEndType, fillArrow, false);
 
 		rightBorderX += SELF_MESSAGE_TEXT_PADDING;
-		double lifelineXEnd = Math.min(hInfo.getHDrawingInfo(to).getSymmetricHorizontalEnd(sendTick),
-				hInfo.getHDrawingInfo(to).getSymmetricHorizontalEnd(sendTick + duration));
+//		double lifelineXEnd = Math.min(hInfo.getHDrawingInfo(to).getSymmetricHorizontalEnd(sendTick),
+//				hInfo.getHDrawingInfo(to).getSymmetricHorizontalEnd(sendTick + duration));
+		double width = TextSplitter.getTextMinWidth(textLines, drawHandler);
 		TextSplitter.drawText(drawHandler, textLines, rightBorderX, send.y,
-				lifelineXEnd - rightBorderX, receive.y - send.y, AlignHorizontal.LEFT, AlignVertical.CENTER);
+				width, receive.y - send.y, AlignHorizontal.LEFT, AlignVertical.CENTER);
 	}
 
 	@Override
@@ -251,14 +252,14 @@ public class Message implements LifelineSpanningTickSpanningOccurrence {
 	}
 
 	protected void getEveryAdditionalYHeightSelfMessage(DrawHandler drawHandler, HorizontalDrawingInfo hInfo, double defaultTickHeight, Map<Integer, Double> ret) {
-		double maxTextWidth;
+		double maxTextWidth = TextSplitter.getTextMinWidth(textLines, drawHandler);
 		double additionalHeight;
 		// if more y space is needed the all covered ticks will be increased
-		double executionSpecWidth = Math.max(from.getLifelineRightPartWidth(sendTick),
-				to.getLifelineRightPartWidth(sendTick + duration));
-		maxTextWidth = Math.min(hInfo.getHDrawingInfo(to).getSymmetricWidth(sendTick),
-				hInfo.getHDrawingInfo(to).getSymmetricWidth(sendTick + duration)) / 2.0;
-		maxTextWidth = maxTextWidth - (executionSpecWidth + SELF_MESSAGE_LIFELINE_GAP + SELF_MESSAGE_TEXT_PADDING);
+//		double executionSpecWidth = Math.max(from.getLifelineRightPartWidth(sendTick),
+//				to.getLifelineRightPartWidth(sendTick + duration));
+//		maxTextWidth = Math.min(hInfo.getHDrawingInfo(to).getSymmetricWidth(sendTick),
+//				hInfo.getHDrawingInfo(to).getSymmetricWidth(sendTick + duration)) / 2.0;
+//		maxTextWidth = maxTextWidth - (executionSpecWidth + SELF_MESSAGE_LIFELINE_GAP + SELF_MESSAGE_TEXT_PADDING);
 		additionalHeight = TextSplitter.getSplitStringHeight(textLines, maxTextWidth, drawHandler) - duration * defaultTickHeight;
 		if (additionalHeight > 0) {
 			for (int i = sendTick + 1; i < sendTick + duration; i++) {

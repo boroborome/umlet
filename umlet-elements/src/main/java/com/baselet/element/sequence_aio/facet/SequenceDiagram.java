@@ -181,11 +181,11 @@ public class SequenceDiagram {
 		for (Lifeline ll : lifelines) {
 			maxMinWidth = Math.max(maxMinWidth, ll.getMinWidth(drawHandler));
 		}
-		for (LifelineSpanningTickSpanningOccurrence llstso : spanningLifelineOccurrences) {
-			int llCount = llstso.getLastLifeline().getIndex() - llstso.getFirstLifeline().getIndex() + 1;
-			maxMinWidth = Math.max(maxMinWidth,
-					(llstso.getOverallMinWidth(drawHandler, LIFELINE_X_PADDING) - LIFELINE_X_PADDING * (llCount - 1)) / llCount);
-		}
+//		for (LifelineSpanningTickSpanningOccurrence llstso : spanningLifelineOccurrences) {
+//			int llCount = llstso.getLastLifeline().getIndex() - llstso.getFirstLifeline().getIndex() + 1;
+//			maxMinWidth = Math.max(maxMinWidth,
+//					(llstso.getOverallMinWidth(drawHandler, LIFELINE_X_PADDING) - LIFELINE_X_PADDING * (llCount - 1)) / llCount);
+//		}
 		return maxMinWidth;
 	}
 
