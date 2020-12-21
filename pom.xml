@@ -31,8 +31,8 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<animal.sniffer.java.api>java16</animal.sniffer.java.api>
 	</properties>
 
@@ -41,13 +41,13 @@
 		<module>umlet-res</module>
 		<module>umlet-swing</module>
 		<module>umlet-standalone</module>
-		<module>umlet-eclipse-plugin-deps</module>
-		<module>umlet-eclipse-plugin</module>
-		<module>umlet-eclipse-feature</module>
-		<module>umlet-eclipse-p2</module>
+<!--		<module>umlet-eclipse-plugin-deps</module>-->
+<!--		<module>umlet-eclipse-plugin</module>-->
+<!--		<module>umlet-eclipse-feature</module>-->
+<!--		<module>umlet-eclipse-p2</module>-->
 		<module>umlet-gwt</module>
-		<module>umlet-web</module>
-		<module>umlet-vscode</module>
+<!--		<module>umlet-web</module>-->
+<!--		<module>umlet-vscode</module>-->
 	</modules>
 
 	<dependencies>
