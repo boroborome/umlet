@@ -1,13 +1,14 @@
 package com.baselet.gui.command;
 
-import java.awt.Point;
-import java.util.Vector;
-
 import com.baselet.control.constants.Constants;
 import com.baselet.diagram.DiagramHandler;
 import com.baselet.element.ElementFactorySwing;
 import com.baselet.element.Selector;
 import com.baselet.element.interfaces.GridElement;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Vector;
 
 public class Paste extends Command {
 
@@ -54,10 +55,13 @@ public class Paste extends Command {
 			minY = Math.min(e.getRectangle().y, minY);
 		}
 
+		Point location = MouseInfo.getPointerInfo().getLocation();
+		SwingUtilities.convertPointFromScreen(location, handler.getDrawPanel());
+		int diffX = location.x - minX;
+		int diffY = location.y - minY;
+
 		for (GridElement e : entities) {
-			e.setLocationDifference(
-					viewpX * handler.getGridSize() - minX + handler.getGridSize() * Constants.PASTE_DISPLACEMENT_GRIDS,
-					viewpY * handler.getGridSize() - minY + handler.getGridSize() * Constants.PASTE_DISPLACEMENT_GRIDS);
+			e.setLocationDifference(diffX, diffY);
 		}
 
 		int offsetX = origin.x - handler.getDrawPanel().getOriginAtDefaultZoom().x;
