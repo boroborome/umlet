@@ -15,9 +15,6 @@ public class Paste extends Command {
 	private Point origin;
 	private Vector<GridElement> entities;
 
-	private int viewpX = 0;
-	private int viewpY = 0;
-
 	@Override
 	public void execute(DiagramHandler handler) {
 		super.execute(handler);
@@ -34,11 +31,6 @@ public class Paste extends Command {
 		// AB: first execution of paste
 		if (origin == null) {
 			origin = handler.getDrawPanel().getOriginAtDefaultZoom();
-
-			// AB: Include viewport position to paste on visible area
-			Point viewp = handler.getDrawPanel().getScrollPane().getViewport().getViewPosition();
-			viewpX = handler.realignToGrid(false, (int) viewp.getX()) / handler.getGridSize();
-			viewpY = handler.realignToGrid(false, (int) viewp.getY()) / handler.getGridSize();
 		}
 
 		if (entities.isEmpty()) {
