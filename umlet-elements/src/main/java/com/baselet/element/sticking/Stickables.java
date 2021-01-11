@@ -20,7 +20,7 @@ public class Stickables {
 
 	private static Logger log = LoggerFactory.getLogger(Stickables.class);
 
-	public static StickableMap getStickingPointsWhichAreConnectedToStickingPolygon(StickingPolygon oldStickingPolygon, Collection<? extends Stickable> stickables) {
+	public static StickableMap  getStickingPointsWhichAreConnectedToStickingPolygon(StickingPolygon oldStickingPolygon, Collection<? extends Stickable> stickables) {
 		int maxDistance = SharedConstants.DEFAULT_GRID_SIZE - 1; // because stickables is always calculated at 10px gridsize, the maxdistance for sticking is 9px (this tolerance is important for diagonal stickinglines like the UseCase has, otherwise 0px tolerance should always work if the stickingLineEnd is always on the exact same Point as the stickingpolygon)
 		log.debug("Polygon to check: " + oldStickingPolygon);
 		StickableMap returnMap = new StickableMap();
@@ -158,7 +158,7 @@ public class Stickables {
 		return changeMatchingLowestDistance;
 	}
 
-	private static PointDouble getAbsolutePosition(Stickable stickable, PointDouble pd) {
+	public static PointDouble getAbsolutePosition(Stickable stickable, PointDouble pd) {
 		// the points are located relative to the upper left corner of the relation, therefore add this corner to have it located to the upper left corner of the diagram
 		int x = stickable.getRealRectangle().getX() + pd.getX().intValue();
 		int y = stickable.getRealRectangle().getY() + pd.getY().intValue();

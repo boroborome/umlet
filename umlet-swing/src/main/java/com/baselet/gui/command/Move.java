@@ -1,17 +1,29 @@
 package com.baselet.gui.command;
 
-import java.util.Collection;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.baselet.control.HandlerElementMap;
 import com.baselet.control.basics.geom.Point;
+import com.baselet.control.basics.geom.PointDouble;
+import com.baselet.control.basics.geom.Rectangle;
 import com.baselet.control.enums.Direction;
 import com.baselet.diagram.CurrentDiagram;
 import com.baselet.diagram.DiagramHandler;
 import com.baselet.element.interfaces.GridElement;
+import com.baselet.element.relation.Relation;
+import com.baselet.element.sticking.PointChange;
+import com.baselet.element.sticking.PointDoubleIndexed;
+import com.baselet.element.sticking.Stickable;
 import com.baselet.element.sticking.StickableMap;
+import com.baselet.element.sticking.Stickables;
+import com.baselet.util.PosSuggestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Move extends Command {
 
@@ -112,6 +124,86 @@ public class Move extends Command {
 		}
 		else {
 			entity.drag(resizeDirection, getX(), getY(), getMousePosBeforeDrag(), isShiftKeyDown, firstDrag, stickables, true);
+		}
+		updateStickables(stickables.getStickables(), handler.getDrawPanel().getGridElements());
+	}
+
+	private void updateStickables(Set<Stickable> stickables, List<GridElement> gridElements) {
+		for (Stickable stickable : stickables) {
+			Map<PointDoubleIndexed, Rectangle> pointRectMap = findPointGrids(stickable, gridElements);
+			Map<PointDoubleIndexed, PointDouble> suggestPos = calculateSuggestPos(pointRectMap);
+			applySuggest(suggestPos, stickable);
+		}
+	}
+
+	private Map<PointDoubleIndexed, Rectangle> findPointGrids(Stickable stickable, List<GridElement> gridElements) {
+		Map<PointDoubleIndexed, Rectangle> pointGridMap = new HashMap<>();
+		for (PointDoubleIndexed point : stickable.getStickablePoints()) {
+			Rectangle connectedRect = null;
+			for (GridElement element : gridElements) {
+				if (element instanceof Relation) {
+					continue;
+				}
+				PointDouble realPoint = Stickables.getAbsolutePosition(stickable, point);
+				if (isConnected(realPoint, element.getRectangle())) {
+					connectedRect = element.getRectangle();
+					break;
+				}
+			}
+			if (connectedRect != null) {
+				pointGridMap.put(point, connectedRect);
+			} else {
+				pointGridMap.put(point, new Rectangle(point.getX().intValue(), point.getY().intValue(), 0, 0));
+			}
+		}
+		return pointGridMap;
+	}
+
+	private boolean isConnected(PointDouble point, Rectangle rect) {
+		int x = point.getX().intValue();
+		int y = point.getY().intValue();
+		return ((x == rect.x || x == rect.x + rect.width) && y >= rect.y && y <= (rect.y + rect.height))
+				|| ((y == rect.y || y == rect.y + rect.height) && x >= rect.x && x <= (rect.x + rect.width));
+	}
+
+	private Map<PointDoubleIndexed, PointDouble> calculateSuggestPos(Map<PointDoubleIndexed, Rectangle> pointRectMap) {
+		Map<PointDoubleIndexed, PointDouble> suggest = new HashMap<>();
+		if (pointRectMap.size() == 2) {
+			List<Map.Entry<PointDoubleIndexed, Rectangle>> entries = new ArrayList<>(pointRectMap.entrySet());
+			Map.Entry<PointDoubleIndexed, Rectangle> e1 = entries.get(0);
+			Map.Entry<PointDoubleIndexed, Rectangle> e2 = entries.get(1);
+
+			PointDoubleIndexed p1 = e1.getKey();
+			Rectangle r1 = e1.getValue();
+
+			PointDoubleIndexed p2 = e2.getKey();
+			Rectangle r2 = e2.getValue();
+
+			int[] suggestXs = PosSuggestUtil.suggestValue(r1.getX(), r1.getWidth(), r2.getX(), r2.getWidth());
+			int[] suggestYs = PosSuggestUtil.suggestValue(r1.getY(), r1.getHeight(), r2.getY(), r2.getHeight());
+
+			suggest.put(p1, new PointDouble(suggestXs[0], suggestYs[0]));
+			suggest.put(p2, new PointDouble(suggestXs[1], suggestYs[1]));
+		}
+		return suggest;
+	}
+
+
+	private void applySuggest(Map<PointDoubleIndexed, PointDouble> suggestPos, Stickable stickable) {
+		List<PointChange> changes = new ArrayList<>();
+		for (Map.Entry<PointDoubleIndexed, PointDouble> entry : suggestPos.entrySet()) {
+			PointDoubleIndexed index = entry.getKey();
+			PointDouble org = Stickables.getAbsolutePosition(stickable, index);
+			PointDouble suggest = entry.getValue();
+			if (org.equals(suggest)) {
+				continue;
+			}
+			changes.add(new PointChange(index.getIndex(),
+					(int) (suggest.getX() - org.getX()),
+					(int) (suggest.getY() - org.getY())));
+		}
+		if (!changes.isEmpty()) {
+			stickable.movePoints(changes);
 		}
 	}
 
